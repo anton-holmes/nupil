@@ -5,3 +5,5 @@ not usage packege in linux
 
 # Teory
 Существует различные типы команд в Linux их можно проверить командой
+
+# Install
