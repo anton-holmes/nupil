@@ -1,0 +1,15 @@
+
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+
+
+# version: '3'
+# services:
+#   nupil:
+#     image: ubuntu:24.04
+#     volumes:
+#       {% for directory in PATH.split(',') %}
+#         - {{ directory }}:/nupil_mount/{{ directory }}
+#       {% endfor %}

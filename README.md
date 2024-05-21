@@ -7,3 +7,4 @@ not usage packege in linux
 Существует различные типы команд в Linux их можно проверить командой
 
 # Install
+gkh
