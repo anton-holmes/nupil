@@ -6,5 +6,13 @@ not usage packege in linux
 # Teory
 Существует различные типы команд в Linux их можно проверить командой
 
+Режимы вчера в течениии недели
+stat
+
+Без установки docker
+
 # Install
 gkh
+
+curl https://url -o output.file.name
+
