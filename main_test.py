@@ -8,7 +8,8 @@ from datetime import date, datetime
 
 env_path = os.getenv("PATH")
 list_path = env_path.split(':')
-
+list_path.append('/opt')
+print(list_path)
 # Программа предназначена, выберите режим
 print('nupil - предназначена для поиска неиспользуемых или последних исполняемых файлов в *nix операцтонных системах')
 print(r"¯\_(ツ)_/¯")
@@ -43,6 +44,7 @@ if user_input.upper() == 'A':
     print('/usr/sbin',)
     print('/usr/local/bin',)
     print('/usr/local/sbin',)
+    print('/opt',)
     print('++++++++++++++++++++++++++++++++++')
     input('Нажмите любую клавишу для продолжения')
 else:
@@ -87,7 +89,6 @@ print()
 # # try exept
 
 # input_date = date(year, month, day)
-
 
 input_date = date(2022, 5, 25)
 
@@ -143,3 +144,21 @@ print(r"¯\_(ツ)_/¯")
 # stat file 
 # Проити по каждому файлу используя stat выдернув 
 # В каталоге содержится такой-то устаревший file 
+
+
+'''
+Опция `relatime` (от "relative atime") используется в Linux-системах для управления обновлением времени доступа (atime) к файлам на файловой системе. Вот более подробное объяснение того, как работает `relatime`:
+
+1. **Оптимизация обновления времени доступа**: По умолчанию, в Unix-подобных системах, каждый раз, когда файл читается, время его последнего доступа (atime) обновляется. Это может привести к лишним операциям записи на диск, что замедляет работу системы, особенно на файловых системах с большим количеством операций ввода-вывода.
+
+2. **Условия обновления atime с `relatime`**: Когда опция `relatime` установлена, время доступа к файлу будет обновляться только в следующих случаях:
+   - Если предыдущее время доступа (atime) старше времени изменения (mtime) или времени создания (ctime) файла.
+   - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
+
+'''
+
+# https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
+# xub@xub:~$ mount | grep " / "
+#/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
+# https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
+
