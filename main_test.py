@@ -16,6 +16,17 @@ print(r"¯\_(ツ)_/¯")
 input('Нажмите любую клавишу для продолжения')
 print('++++++++++++++++++++++++++++++++++')
 
+# https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
+# xub@xub:~$ mount | grep " / "
+#/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
+# https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
+
+# поиск всех файлов и их зависимостей, сколько занимают памяти
+# зависимости apt-cache depends имя_пакета
+# ldd /абсолютный путь к файлу
+# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
+# в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
+
 print()
 print('Общие сведения об исполняемых файлах')
 def count_path():
@@ -57,7 +68,10 @@ else:
 # print(today)
 
 print()
+# какому менеджеру пакетов принадлежит программа
+# зависящие пакеты, зависимые пакеты
 # example data input
+
 # дополнительная фича не позднее
 # используемые вчера 
 # используемые в течении недели
@@ -70,6 +84,8 @@ print()
 # strace /usr/bin/libreoffice отслеживание системных вызовов
 # /opt 
 # /user/share лежат данные /etc конфигурация
+# synaptik
+# менеджер пактов dpkg
 
 # Находит все файлы программы
 # whereis libreoffice
@@ -79,15 +95,20 @@ print()
 # find
 #locate libreoffice
 
-# Выводит все файлы 
+# ищет где лежат файлы пакета
+#dpkg-query -L kontena-lens 
 
+# Поиск зависимостей
+#
+
+
+# Выводит все файлы 
 
 # Функция ввода даты
 # year = int(input('Enter a year: '))
 # month = int(input('Enter a month: '))
 # day = int(input('Enter a day: '))
 # # try exept
-
 # input_date = date(year, month, day)
 
 input_date = date(2022, 5, 25)
@@ -156,9 +177,4 @@ print(r"¯\_(ツ)_/¯")
    - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
 
 '''
-
-# https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
-# xub@xub:~$ mount | grep " / "
-#/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
-# https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
 
