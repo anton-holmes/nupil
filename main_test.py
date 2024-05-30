@@ -8,18 +8,45 @@ from datetime import date, datetime
 
 env_path = os.getenv("PATH")
 list_path = env_path.split(':')
-list_path.append('/opt')
-print(list_path)
+# list_path.append('/opt')
+# print(list_path)
+
 # Программа предназначена, выберите режим
-print('nupil - предназначена для поиска неиспользуемых или последних исполняемых файлов в *nix операцтонных системах')
-print(r"¯\_(ツ)_/¯")
+print(r"¯\_(ツ)_/¯", 'nupil - предназначен для поиска неиспользуемых или последних исполняемых файлов в *nix операцтонных системах')
+print()
 input('Нажмите любую клавишу для продолжения')
 print('++++++++++++++++++++++++++++++++++')
+
+print()
+print('Ваш режим доступа к диску')
+mode = subprocess.check_output('mount | grep " / "', shell=True)
+output = mode.decode('utf-8').strip()
+print(output)
+print()
+print('++++++++++++++++++++++++++++++++++')
+
+user_input = input("Введите 'a' или 'A' для получения справки о режимах доступа к дискам: ")
+if user_input.upper() == 'A':
+    print("Справка mode")
+    print('Current versions of the Linux kernel support four mount options, which can be specified in fstab:')
+
+    print('strictatime (formerly atime, and formerly the default; strictatime as of 2.6.30) – always update atime, which conforms to the behavior defined by POSIX')
+    print('relatime ("relative atime", introduced in 2.6.20 and the default as of 2.6.30) – only update atime under certain circumstances: if the previous atime is older than the mtime or ctime, or the previous atime is over 24 hours in the past')
+    print('nodiratime – never update atime of directories, but do update atime of other files')
+    print('noatime – never update atime of any file or directory; implies nodiratime; highest performance, but least compatible')
+    print('lazytime – update atime according to specific circumstances laid out below')
+
+    input('Нажмите любую клавишу для продолжения')
+else:
+    print("Продолжаем")
+
 
 # https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
 # xub@xub:~$ mount | grep " / "
 #/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
 # https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
+
+
 
 # поиск всех файлов и их зависимостей, сколько занимают памяти
 # зависимости apt-cache depends имя_пакета
@@ -31,7 +58,7 @@ print()
 print('Общие сведения об исполняемых файлах')
 def count_path():
     count_file = 0
-    # Выполнить команду и получить вывод
+    # Выполнить команду и получить выводq
     for path in list_path:
         result = subprocess.check_output('ls ' + path + ' | wc -l', shell=True)
     # Преобразовать вывод в строку и удалить лишние пробелы
@@ -61,9 +88,7 @@ if user_input.upper() == 'A':
 else:
     print("Продолжаем")
 
-
 # Выберите режим использования
-
 # today = datetime.date.today()
 # print(today)
 
@@ -83,6 +108,7 @@ print()
 # список зависимосте ldd /usr/bin/python3 
 # strace /usr/bin/libreoffice отслеживание системных вызовов
 # /opt 
+
 # /user/share лежат данные /etc конфигурация
 # synaptik
 # менеджер пактов dpkg
@@ -97,10 +123,6 @@ print()
 
 # ищет где лежат файлы пакета
 #dpkg-query -L kontena-lens 
-
-# Поиск зависимостей
-#
-
 
 # Выводит все файлы 
 
@@ -166,7 +188,6 @@ print(r"¯\_(ツ)_/¯")
 # Проити по каждому файлу используя stat выдернув 
 # В каталоге содержится такой-то устаревший file 
 
-
 '''
 Опция `relatime` (от "relative atime") используется в Linux-системах для управления обновлением времени доступа (atime) к файлам на файловой системе. Вот более подробное объяснение того, как работает `relatime`:
 
@@ -175,6 +196,5 @@ print(r"¯\_(ツ)_/¯")
 2. **Условия обновления atime с `relatime`**: Когда опция `relatime` установлена, время доступа к файлу будет обновляться только в следующих случаях:
    - Если предыдущее время доступа (atime) старше времени изменения (mtime) или времени создания (ctime) файла.
    - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
-
 '''
 
