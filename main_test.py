@@ -12,13 +12,17 @@ list_path = env_path.split(':')
 # print(list_path)
 
 # Программа предназначена, выберите режим
+print('####################################')
+print('###########    NUPIL   #############')
+print('####################################')
+
 print(r"¯\_(ツ)_/¯", 'nupil - предназначен для поиска неиспользуемых или последних исполняемых файлов в *nix операцтонных системах')
 print()
 input('Нажмите любую клавишу для продолжения')
 print('++++++++++++++++++++++++++++++++++')
 
 print()
-print('Ваш режим доступа к диску')
+print('Ваш режим доступа к дискам')
 mode = subprocess.check_output('mount | grep " / "', shell=True)
 output = mode.decode('utf-8').strip()
 print(output)
@@ -27,35 +31,30 @@ print('++++++++++++++++++++++++++++++++++')
 
 user_input = input("Введите 'a' или 'A' для получения справки о режимах доступа к дискам: ")
 if user_input.upper() == 'A':
-    print("Справка mode")
+    print("Опции монтирования дисков")
     print('Current versions of the Linux kernel support four mount options, which can be specified in fstab:')
-
     print('strictatime (formerly atime, and formerly the default; strictatime as of 2.6.30) – always update atime, which conforms to the behavior defined by POSIX')
     print('relatime ("relative atime", introduced in 2.6.20 and the default as of 2.6.30) – only update atime under certain circumstances: if the previous atime is older than the mtime or ctime, or the previous atime is over 24 hours in the past')
     print('nodiratime – never update atime of directories, but do update atime of other files')
     print('noatime – never update atime of any file or directory; implies nodiratime; highest performance, but least compatible')
     print('lazytime – update atime according to specific circumstances laid out below')
-
     input('Нажмите любую клавишу для продолжения')
 else:
     print("Продолжаем")
 
-
+# Опции монтирования
 # https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
 # xub@xub:~$ mount | grep " / "
 #/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
 # https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
 
 
+# Вернуться к предыдущему шагу 
+# Выход
 
-# поиск всех файлов и их зависимостей, сколько занимают памяти
-# зависимости apt-cache depends имя_пакета
-# ldd /абсолютный путь к файлу
-# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
-# в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
 
 print()
-print('Общие сведения об исполняемых файлах')
+print('Каталоги PATH и количество исполняемых файлов в них')
 def count_path():
     count_file = 0
     # Выполнить команду и получить выводq
@@ -93,9 +92,13 @@ else:
 # print(today)
 
 print()
-# какому менеджеру пакетов принадлежит программа
-# зависящие пакеты, зависимые пакеты
-# example data input
+
+# поиск всех файлов и их зависимостей, сколько занимают памяти
+# зависимости apt-cache depends имя_пакета
+# ldd /абсолютный путь к файлу
+# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
+# в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
+
 
 # дополнительная фича не позднее
 # используемые вчера 
@@ -122,7 +125,7 @@ print()
 #locate libreoffice
 
 # ищет где лежат файлы пакета
-#dpkg-query -L kontena-lens 
+# dpkg-query -L kontena-lens 
 
 # Выводит все файлы 
 
@@ -133,7 +136,7 @@ print()
 # # try exept
 # input_date = date(year, month, day)
 
-input_date = date(2022, 5, 25)
+input_date = date(2023, 6, 1)
 
 print('Input date: ', input_date)
 
@@ -143,11 +146,12 @@ full_size = 0
 for path in list_path:
     result = subprocess.check_output('ls ' + path, shell=True)
     output = result.decode('utf-8').strip()
-    list_file_in_foldet = output.split()
+    list_file_in_folder = output.split()
     print()
     print(path)
     # если нет то напиши not found
-    for i in list_file_in_foldet:
+
+    for i in list_file_in_folder:
         result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
         output = result.decode('utf-8').strip()
         full_data = output.split('\n')
@@ -156,21 +160,35 @@ for path in list_path:
         size = full_data[1]
         size = size.split(' ')
         size_result = size[3]
-        
         # print(date)
         
         pattern = r"\b\d{4}-\d{2}-\d{2}\b"
         match = re.findall(pattern, date)
         match = ''.join(match)
         # print(match)
-        acsess_data_file = datetime.strptime(match, "%Y-%m-%d").date()
-        # print(modify_data_file)
+        access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
+        print(access_data_file)
 
-        if acsess_data_file < input_date:
+        if access_data_file < input_date:
             size_result = int(size_result)
             full_size = full_size + size_result
-            print(acsess_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
+            print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
+        
+
+
+        # found_matching_data = False
+
+        # for z, access_data_file in enumerate(i):
+        #     if access_data_file < input_date:
+        #         size_result = int(size_result)
+        #         full_size = full_size + size_result
+        #         print(access_data_file, 'меньше', input_date, z, size_result/1024/1024, 'Mb')
+        #         found_matching_data = True
+
+        # if not found_matching_data:
+        #     print('Не найдено')
             # округлить до 5 знаков после запятой
+        
 
 print(full_size/1024/1024, 'Mb')
 print(r"¯\_(ツ)_/¯")
@@ -188,6 +206,11 @@ print(r"¯\_(ツ)_/¯")
 # Проити по каждому файлу используя stat выдернув 
 # В каталоге содержится такой-то устаревший file 
 
+
+# какому менеджеру пакетов принадлежит программа
+# зависящие пакеты, зависимые пакеты
+# example data input
+
 '''
 Опция `relatime` (от "relative atime") используется в Linux-системах для управления обновлением времени доступа (atime) к файлам на файловой системе. Вот более подробное объяснение того, как работает `relatime`:
 
@@ -198,3 +221,6 @@ print(r"¯\_(ツ)_/¯")
    - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
 '''
 
+######################
+# strace             #
+######################
