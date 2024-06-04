@@ -4,7 +4,7 @@ import re
 from datetime import date, datetime
 # import timeit
 # Засечь время работы программы
-
+# Использовать данные предыдущего анализа или собрать заново
 
 env_path = os.getenv("PATH")
 list_path = env_path.split(':')
@@ -167,7 +167,7 @@ for path in list_path:
         match = ''.join(match)
         # print(match)
         access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
-        print(access_data_file)
+        # print(access_data_file)
 
         if access_data_file < input_date:
             size_result = int(size_result)
@@ -192,6 +192,10 @@ for path in list_path:
 
 print(full_size/1024/1024, 'Mb')
 print(r"¯\_(ツ)_/¯")
+t='#'
+for i in range(10):
+    t = t+'#'
+    print(t)
 
 # цикл
 # зависимости
@@ -220,6 +224,7 @@ print(r"¯\_(ツ)_/¯")
    - Если предыдущее время доступа (atime) старше времени изменения (mtime) или времени создания (ctime) файла.
    - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
 '''
+
 
 ######################
 # strace             #
