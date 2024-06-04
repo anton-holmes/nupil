@@ -32,13 +32,7 @@ print('++++++++++++++++++++++++++++++++++')
 user_input = input("Введите 'a' или 'A' для получения справки о режимах доступа к дискам: ")
 if user_input.upper() == 'A':
     print("Опции монтирования дисков")
-    print('Current versions of the Linux kernel support four mount options, which can be specified in fstab:')
-    print('strictatime (formerly atime, and formerly the default; strictatime as of 2.6.30) – always update atime, which conforms to the behavior defined by POSIX')
-    print('relatime ("relative atime", introduced in 2.6.20 and the default as of 2.6.30) – only update atime under certain circumstances: if the previous atime is older than the mtime or ctime, or the previous atime is over 24 hours in the past')
-    print('nodiratime – never update atime of directories, but do update atime of other files')
-    print('noatime – never update atime of any file or directory; implies nodiratime; highest performance, but least compatible')
-    print('lazytime – update atime according to specific circumstances laid out below')
-    input('Нажмите любую клавишу для продолжения')
+св
 else:
     print("Продолжаем")
 
