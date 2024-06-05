@@ -32,7 +32,6 @@ print('++++++++++++++++++++++++++++++++++')
 user_input = input("Введите 'a' или 'A' для получения справки о режимах доступа к дискам: ")
 if user_input.upper() == 'A':
     print("Опции монтирования дисков")
-св
 else:
     print("Продолжаем")
 
@@ -45,7 +44,6 @@ else:
 
 # Вернуться к предыдущему шагу 
 # Выход
-
 
 print()
 print('Каталоги PATH и количество исполняемых файлов в них')
@@ -130,13 +128,14 @@ print()
 # # try exept
 # input_date = date(year, month, day)
 
-input_date = date(2023, 6, 1)
+input_date = date(2022, 6, 1)
 
 print('Input date: ', input_date)
 
 list_output = ()
 # цикл
 full_size = 0
+t =  {}
 for path in list_path:
     result = subprocess.check_output('ls ' + path, shell=True)
     output = result.decode('utf-8').strip()
@@ -149,25 +148,51 @@ for path in list_path:
         result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
         output = result.decode('utf-8').strip()
         full_data = output.split('\n')
-        # print(full_data)
+
+        size = subprocess.check_output('whereis ' + path + '/' + i, shell=True)
+        size_output = size.decode('utf-8').strip()
+        # pattern_size = r"\b\d{4}-\d{2}-\d{2}\b"
+        # print(size_output)
+
+        zise_all_path = re.findall(r'/(.*)$', size_output)
+        zise_all_path = ''.join(zise_all_path)
+        print(zise_all_path)
+
+        size_sum = subprocess.check_output('du -csh ' + '/' + zise_all_path, shell=True)
+        # print(size_sum)
+        size_output = size_sum.decode('utf-8').strip()
+        print(size_output)
+        print('++++++++++++++++++++')
+
+        # Это могут быть символьные ссылки, которые и содержат факт 
+        # если символьная ссылка существует в другом каталоге, если в этом то просчитать другой 
+        # и его пропустить
+
+
         date = full_data[-4]
-        size = full_data[1]
-        size = size.split(' ')
-        size_result = size[3]
+        # size = full_data[1]
+        # size = size.split(' ')
+        # size_result = size[3]
         # print(date)
-        
         pattern = r"\b\d{4}-\d{2}-\d{2}\b"
         match = re.findall(pattern, date)
         match = ''.join(match)
         # print(match)
         access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
-        # print(access_data_file)
 
-        if access_data_file < input_date:
-            size_result = int(size_result)
-            full_size = full_size + size_result
-            print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
-        
+        # print(str(access_data_file), i)
+
+        t.update({i: {'data':str(access_data_file) , 'size':'value2'}})
+# print(t)
+
+        # name i, size MB, datatime, data  
+
+        # if access_data_file < input_date:
+        #     size_result = int(size_result)
+        #     full_size = full_size + size_result
+        #     print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
+        # du -sh .
+input('Нажмите любую клавишу для продолжения')       
 
 
         # found_matching_data = False
@@ -204,7 +229,6 @@ for i in range(10):
 # Проити по каждому файлу используя stat выдернув 
 # В каталоге содержится такой-то устаревший file 
 
-
 # какому менеджеру пакетов принадлежит программа
 # зависящие пакеты, зависимые пакеты
 # example data input
@@ -223,3 +247,8 @@ for i in range(10):
 ######################
 # strace             #
 ######################
+
+
+# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
+# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
+# или файлы имеюющие наибеольшую частоту изменений
