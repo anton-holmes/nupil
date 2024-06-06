@@ -44,6 +44,8 @@ def print_table(data):
 # Вывод данных в виде таблицы
 print_table(data)
 '''
+
+'''
 import time
 import os
 
@@ -53,3 +55,10 @@ atime_str = time.strftime('%Y-%m-%d %H:%N:%S', time.localtime(atime))
 
 print(atime_str)
 
+'''
+
+text = '''200K    /usr/bin/loadkeys
+4,0K    /usr/share/man/man1/loadkeys.1.gz
+204K    итого'''
+
+print(text.split()[-2])

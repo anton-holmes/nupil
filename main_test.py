@@ -91,7 +91,6 @@ print()
 # apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
 # в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
 
-
 # дополнительная фича не позднее
 # используемые вчера 
 # используемые в течении недели
@@ -130,7 +129,7 @@ print()
 
 input_date = date(2022, 6, 1)
 
-print('Input date: ', input_date)
+print('Вывести все исполняемые файлы обращение к которым производилось старше : ', input_date)
 
 list_output = ()
 # цикл
@@ -140,50 +139,45 @@ for path in list_path:
     result = subprocess.check_output('ls ' + path, shell=True)
     output = result.decode('utf-8').strip()
     list_file_in_folder = output.split()
-    print()
-    print(path)
+    # print()
+    # print(path)
     # если нет то напиши not found
-
+    # Здесть ожидание с
     for i in list_file_in_folder:
         result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
         output = result.decode('utf-8').strip()
         full_data = output.split('\n')
+        # print(full_data[0]) # BIN + СИМВОЛЬНАЯ ССЫЛКА 
 
         size = subprocess.check_output('whereis ' + path + '/' + i, shell=True)
         size_output = size.decode('utf-8').strip()
-        # pattern_size = r"\b\d{4}-\d{2}-\d{2}\b"
-        # print(size_output)
+        
 
         zise_all_path = re.findall(r'/(.*)$', size_output)
         zise_all_path = ''.join(zise_all_path)
-        print(zise_all_path)
-
         size_sum = subprocess.check_output('du -csh ' + '/' + zise_all_path, shell=True)
-        # print(size_sum)
         size_output = size_sum.decode('utf-8').strip()
-        print(size_output)
-        print('++++++++++++++++++++')
+        # print(size_output.split()[-2]) # ИТОГО
+
+        # print('++++++++++++++++++++')
 
         # Это могут быть символьные ссылки, которые и содержат факт 
         # если символьная ссылка существует в другом каталоге, если в этом то просчитать другой 
         # и его пропустить
 
-
+        name = full_data[0]
         date = full_data[-4]
-        # size = full_data[1]
-        # size = size.split(' ')
-        # size_result = size[3]
-        # print(date)
         pattern = r"\b\d{4}-\d{2}-\d{2}\b"
         match = re.findall(pattern, date)
         match = ''.join(match)
-        # print(match)
         access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
 
-        # print(str(access_data_file), i)
+        # # print(str(access_data_file), i) 
 
-        t.update({i: {'data':str(access_data_file) , 'size':'value2'}})
-# print(t)
+        t.update({name: {'data':str(access_data_file) , 'size': size_output.split()[-2], 'path_folder': path}})
+print(t)
+
+
 
         # name i, size MB, datatime, data  
 
@@ -209,8 +203,22 @@ input('Нажмите любую клавишу для продолжения')
             # округлить до 5 знаков после запятой
         
 
-print(full_size/1024/1024, 'Mb')
-print(r"¯\_(ツ)_/¯")
+# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
+# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
+# или файлы имеюющие наибеольшую частоту изменений
+
+######################33
+# Вывод списка старше определенной даты
+# Вывод списка зависимостей и зависимости зависимостей
+# Вывод man 
+# strace
+# Рекомендации по удалению
+# Не забудь snap
+#########################
+
+# print(full_size/1024/1024, 'Mb')
+# print(r"¯\_(ツ)_/¯")
+
 t='#'
 for i in range(10):
     t = t+'#'
@@ -242,13 +250,3 @@ for i in range(10):
    - Если предыдущее время доступа (atime) старше времени изменения (mtime) или времени создания (ctime) файла.
    - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
 '''
-
-
-######################
-# strace             #
-######################
-
-
-# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
-# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
-# или файлы имеюющие наибеольшую частоту изменений
