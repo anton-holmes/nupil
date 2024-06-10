@@ -35,12 +35,6 @@ if user_input.upper() == 'A':
 else:
     print("Продолжаем")
 
-# Опции монтирования
-# https://en.wikipedia.org/wiki/Stat_%28system_call%29#Criticism_of_atime
-# xub@xub:~$ mount | grep " / "
-#/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
-# https://access.redhat.com/documentation/ru-ru/red_hat_enterprise_linux/6/html/power_management_guide/relatime
-
 
 # Вернуться к предыдущему шагу 
 # Выход
