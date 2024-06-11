@@ -1,7 +1,10 @@
 import os
+import sys
 import subprocess
 import re
+import time
 from datetime import date, datetime
+
 # import timeit
 # Засечь время работы программы
 # Использовать данные предыдущего анализа или собрать заново
@@ -16,7 +19,7 @@ print('####################################')
 print('###########    NUPIL   #############')
 print('####################################')
 
-print(r"¯\_(ツ)_/¯", 'nupil - предназначен для поиска неиспользуемых или последних исполняемых файлов в *nix операцтонных системах')
+print(r"¯\_(ツ)_/¯", 'nupil - предназначен для поиска неиспользуемых или последних исполняемых файлов в *nix операционных системах')
 print()
 input('Нажмите любую клавишу для продолжения')
 print('++++++++++++++++++++++++++++++++++')
@@ -34,7 +37,6 @@ if user_input.upper() == 'A':
     print("Опции монтирования дисков")
 else:
     print("Продолжаем")
-
 
 # Вернуться к предыдущему шагу 
 # Выход
@@ -61,27 +63,178 @@ user_input = input("Введите 'a' или 'A' для получения сп
 if user_input.upper() == 'A':
     print("Справка по предназначению стандартных катологов в PATH. ")
     print('++++++++++++++++++++++++++++++++++')
-    print('/bin', ' - содержит исполняемые бинарные файлы различных служб, доступные для запуска любым пользователям')
-    print('/sbin', ' - содержит исполняемые бинарные файлы для системного администрирования (и другие команды предназначенные для root), /sbin содержит двоичные файлы, необходимые для загрузки, восстановления и/или восстановления системы в дополнение к двоичным файлам в /bin.')
-    print('/usr/bin', )
-    print('/usr/sbin',)
-    print('/usr/local/bin',)
-    print('/usr/local/sbin',)
-    print('/opt',)
+    print('/bin', ' - Директория предназначена для хранятся основных исполняемых файлов, необходимых для минимальной загрузки и функционирования ОС. Данные файлы включают в себя утилиты командной строки, необходимые для  работы системы, к примеру для работы с файловой системой, команды для управления процессами и др.')
+    print('++++++++++++++++++++++++++++++++++')
+    print('/sbin', ' - В директории хранятся системные исполняемые файлы, которые используются для администрирования и управления системой. Выполнение представленных файлов обычно требуют повышенных привилегий (как правило, root). Могут быть использованы на ранних стадиях загрузки системы или для восстановления после сбоев, монтирования файловых систем, настройки сети, администрирования учетных записей и др.')
+    print('++++++++++++++++++++++++++++++++++')
+    print('/usr/bin', ' - Директория предназначена для хранятся основных исполняемых файлов и пользовательских программ и представляют собой утилиты и приложения, которые используются пользователями системы. В отличие от /bin, содержимое /usr/bin не является необходимым для загрузки или функционирования базовой системы.')
+    print('++++++++++++++++++++++++++++++++++')
+    print('/usr/sbin', ' - В директории хранятся системные исполняемые файлы, которые также предназначены для администрирования и управления, но они обычно не являются критически важными для базового функционирования. Данные файлы могут быть установлены отдельно от основной системы и предназначены для использования системными администраторами. В качестве примера в данный каталог включены утилиты для управления службами, настройки безопасности и др.')
+    print('++++++++++++++++++++++++++++++++++')
+    print('/usr/local/bin', ' - Директория предназначена для хранения исполняемых файлов и пользовательских программ, которые не входят в стандартный набор поставляемых с ОС. Обычно в данную директорию располагают программы, которые не устанавливаются с помощью пакетных менеджеров, а компилируются и устанавливаются вручную или с помощью сторонних инструментов установки. Файлы расположенные в /usr/local/bin доступны всем пользователям системы.' )
+    print('++++++++++++++++++++++++++++++++++')
+    print('/usr/local/sbin', ' - Данная директория аналогична /usr/local/bin, но предназначена для хранения системных исполняемых файлов пользовательских программ, которые требуют повышенных привилегий для выполнения. Эти файлы также не входят в стандартный набор поставляемых с ОС и устанавливаются вручную или с помощью других инструментов установки. Файлы в `/usr/local/sbin` обычно доступны только администраторам системы.')
+    print('++++++++++++++++++++++++++++++++++')
+    print('/opt', '- в данной директории располагаются дополнительные пакеты. Например при установке программы из deb пакета, в каталоги перечисленные выше помещается файл ссылающийся на исходный код, который располагается в /opt.')
     print('++++++++++++++++++++++++++++++++++')
     input('Нажмите любую клавишу для продолжения')
 else:
     print("Продолжаем")
+print()
+
+input_date = date(2022, 6, 1)
+
+print('Для определяния неспользуемых бинарных файлов введите ДАТУ, старше которой произвести сканирование : ', input_date)
+####
+#
+####
+
+list_output = ()
+# цикл
+full_size = 0
+t, t_sort =  {}, {}
+
+for path in list_path:
+    result = subprocess.check_output('ls ' + path, shell=True)
+    output = result.decode('utf-8').strip()
+    list_file_in_folder = output.split()
+    for i in list_file_in_folder:
+        result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
+        output = result.decode('utf-8').strip()
+        full_data = output.split('\n')
+        # print(full_data[0]) # BIN + СИМВОЛЬНАЯ ССЫЛКА 
+
+        size = subprocess.check_output('whereis ' + path + '/' + i, shell=True)
+        size_output = size.decode('utf-8').strip()
+        
+
+        zise_all_path = re.findall(r'/(.*)$', size_output)
+        zise_all_path = ''.join(zise_all_path)
+        size_sum = subprocess.check_output('du -csh ' + '/' + zise_all_path, shell=True)
+        size_output = size_sum.decode('utf-8').strip()
+        # print(size_output.split()[-2]) # ИТОГО
+
+        # print('++++++++++++++++++++')
+
+        # Это могут быть символьные ссылки, которые и содержат факт 
+        # если символьная ссылка существует в другом каталоге, если в этом то просчитать другой 
+        # и его пропустить
+
+        name = full_data[0]
+        date = full_data[-4]
+        pattern = r"\b\d{4}-\d{2}-\d{2}\b"
+        match = re.findall(pattern, date)
+        match = ''.join(match)
+        access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
+
+        # # print(str(access_data_file), i) 
+
+        t.update({name: {'data': access_data_file, 'size': size_output.split()[-2], 'path_folder': path}})
+
+        if access_data_file < input_date:
+            t_sort.update({name: {'data': str(access_data_file), 'size': size_output.split()[-2], 'path_folder': path}})
+
+
+total = 1000 # total number to reach
+bar_length = 50  # should be less than 100
+for i in range(total+1):
+    percent = 100.0*i/total
+    sys.stdout.write('\r')
+    sys.stdout.write("Process: [{:{}}] {:>3}"
+                    .format('#'*int(percent/(100.0/bar_length)), bar_length, ''))
+                    # .format('#'*int(percent/(100.0/bar_length)), bar_length, int(percent)))
+    sys.stdout.flush()
+    time.sleep(0.001)
+
+# print(t_sort)
+print("Сканирование успешно выполнено")
+
+print('Вывод статистики')
+
+print("Для просмотра результатов соответсвующих каталогов введите его путь. Например '/usr/sbin' ")
+
+
+# поиск точного совпадения с существующим пакетом в apt
+# dpkg --get-selections | grep -v deinstall | grep -w dc
+
+
+print("Для дополнительной информации о пакете введите его название. Или Перейдите в меню выше ")
+
+
+
+# print(t)
+
+
+        # name i, size MB, datatime, data  
+
+        # if access_data_file < input_date:
+        #     size_result = int(size_result)
+        #     full_size = full_size + size_result
+        #     print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
+        # du -sh .
+
+input('Нажмите любую клавишу для продолжения')       
+
+        # found_matching_data = False
+
+        # for z, access_data_file in enumerate(i):
+        #     if access_data_file < input_date:
+        #         size_result = int(size_result)
+        #         full_size = full_size + size_result
+        #         print(access_data_file, 'меньше', input_date, z, size_result/1024/1024, 'Mb')
+        #         found_matching_data = True
+
+        # if not found_matching_data:
+        #     print('Не найдено')
+            # округлить до 5 знаков после запятой
+        
+
+# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
+# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
+# или файлы имеюющие наибеольшую частоту изменений
+
+########################
+# Вывод списка старше определенной даты
+# Вывод списка зависимостей и зависимости зависимостей
+# Вывод man man -f ls
+# strace
+# Рекомендации по удалению
+# Не забудь snap
+#########################
+
+# print(full_size/1024/1024, 'Mb')
+# print(r"¯\_(ツ)_/¯")
+
+t='#'
+for i in range(10):
+    t = t+'#'
+    print(t)
+
+# цикл
+# зависимости
+# краткая справка MAN
+# СПРАВКА ИЗ ИНТЕРНЕТА
+# рекомендации по удалению
+
+# for i in tqdm(range(10)):
+#     sleep(3)
+
+# stat file 
+# Проити по каждому файлу используя stat выдернув 
+# В каталоге содержится такой-то устаревший file 
+
+# какому менеджеру пакетов принадлежит программа
+# зависящие пакеты, зависимые пакеты
+# example data input
+
+# ldd /абсолютный путь к файлу
 
 # Выберите режим использования
 # today = datetime.date.today()
 # print(today)
-
-print()
-
 # поиск всех файлов и их зависимостей, сколько занимают памяти
 # зависимости apt-cache depends имя_пакета
-# ldd /абсолютный путь к файлу
+
 # apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
 # в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
 
@@ -120,120 +273,6 @@ print()
 # day = int(input('Enter a day: '))
 # # try exept
 # input_date = date(year, month, day)
-
-input_date = date(2022, 6, 1)
-
-print('Вывести все исполняемые файлы обращение к которым производилось старше : ', input_date)
-
-list_output = ()
-# цикл
-full_size = 0
-t =  {}
-for path in list_path:
-    result = subprocess.check_output('ls ' + path, shell=True)
-    output = result.decode('utf-8').strip()
-    list_file_in_folder = output.split()
-    # print()
-    # print(path)
-    # если нет то напиши not found
-    # Здесть ожидание с
-    for i in list_file_in_folder:
-        result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
-        output = result.decode('utf-8').strip()
-        full_data = output.split('\n')
-        # print(full_data[0]) # BIN + СИМВОЛЬНАЯ ССЫЛКА 
-
-        size = subprocess.check_output('whereis ' + path + '/' + i, shell=True)
-        size_output = size.decode('utf-8').strip()
-        
-
-        zise_all_path = re.findall(r'/(.*)$', size_output)
-        zise_all_path = ''.join(zise_all_path)
-        size_sum = subprocess.check_output('du -csh ' + '/' + zise_all_path, shell=True)
-        size_output = size_sum.decode('utf-8').strip()
-        # print(size_output.split()[-2]) # ИТОГО
-
-        # print('++++++++++++++++++++')
-
-        # Это могут быть символьные ссылки, которые и содержат факт 
-        # если символьная ссылка существует в другом каталоге, если в этом то просчитать другой 
-        # и его пропустить
-
-        name = full_data[0]
-        date = full_data[-4]
-        pattern = r"\b\d{4}-\d{2}-\d{2}\b"
-        match = re.findall(pattern, date)
-        match = ''.join(match)
-        access_data_file = datetime.strptime(match, "%Y-%m-%d").date()
-
-        # # print(str(access_data_file), i) 
-
-        t.update({name: {'data':str(access_data_file) , 'size': size_output.split()[-2], 'path_folder': path}})
-print(t)
-
-
-
-        # name i, size MB, datatime, data  
-
-        # if access_data_file < input_date:
-        #     size_result = int(size_result)
-        #     full_size = full_size + size_result
-        #     print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
-        # du -sh .
-input('Нажмите любую клавишу для продолжения')       
-
-
-        # found_matching_data = False
-
-        # for z, access_data_file in enumerate(i):
-        #     if access_data_file < input_date:
-        #         size_result = int(size_result)
-        #         full_size = full_size + size_result
-        #         print(access_data_file, 'меньше', input_date, z, size_result/1024/1024, 'Mb')
-        #         found_matching_data = True
-
-        # if not found_matching_data:
-        #     print('Не найдено')
-            # округлить до 5 знаков после запятой
-        
-
-# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
-# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
-# или файлы имеюющие наибеольшую частоту изменений
-
-######################33
-# Вывод списка старше определенной даты
-# Вывод списка зависимостей и зависимости зависимостей
-# Вывод man 
-# strace
-# Рекомендации по удалению
-# Не забудь snap
-#########################
-
-# print(full_size/1024/1024, 'Mb')
-# print(r"¯\_(ツ)_/¯")
-
-t='#'
-for i in range(10):
-    t = t+'#'
-    print(t)
-
-# цикл
-# зависимости
-# краткая справка MAN
-# СПРАВКА ИЗ ИНТЕРНЕТА
-# рекомендации по удалению
-
-# for i in tqdm(range(10)):
-#     sleep(3)
-
-# stat file 
-# Проити по каждому файлу используя stat выдернув 
-# В каталоге содержится такой-то устаревший file 
-
-# какому менеджеру пакетов принадлежит программа
-# зависящие пакеты, зависимые пакеты
-# example data input
 
 '''
 Опция `relatime` (от "relative atime") используется в Linux-системах для управления обновлением времени доступа (atime) к файлам на файловой системе. Вот более подробное объяснение того, как работает `relatime`:
