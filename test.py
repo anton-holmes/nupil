@@ -1,16 +1,21 @@
 import time
 import sys
 
-total = 1007  # total number to reach
-bar_length = 30  # should be less than 100
-for i in range(total+1):
-    percent = 100.0*i/total
-    sys.stdout.write('\r')
-    sys.stdout.write("Completed: [{:{}}] {:>3}%"
-                     .format('='*int(percent/(100.0/bar_length)),
-                             bar_length, int(percent)))
+for i in range(30):
+    sys.stdout.write("#")
     sys.stdout.flush()
     time.sleep(0.002)
+
+# total = 1007  # total number to reach
+# bar_length = 30  # should be less than 100
+# for i in range(total+1):
+#     percent = 100.0*i/total
+#     sys.stdout.write('\r')
+#     sys.stdout.write("Completed: [{:{}}] {:>3}%"
+#                      .format('='*int(percent/(100.0/bar_length)),
+#                              bar_length, int(percent)))
+#     sys.stdout.flush()
+#     time.sleep(0.002)
 
 
  #  print ("{:<8} {:<15} {:<10} {:<10}".format(k, lang, perc, change)

@@ -93,11 +93,15 @@ list_output = ()
 # цикл
 full_size = 0
 t, t_sort =  {}, {}
+list_data, list_small_data = [], []
+list_small_data_test = []
+k = 0
 
 for path in list_path:
     result = subprocess.check_output('ls ' + path, shell=True)
     output = result.decode('utf-8').strip()
     list_file_in_folder = output.split()
+    z = 0
     for i in list_file_in_folder:
         result = subprocess.check_output('stat ' + path + '/' + i, shell=True)
         output = result.decode('utf-8').strip()
@@ -107,7 +111,6 @@ for path in list_path:
         size = subprocess.check_output('whereis ' + path + '/' + i, shell=True)
         size_output = size.decode('utf-8').strip()
         
-
         zise_all_path = re.findall(r'/(.*)$', size_output)
         zise_all_path = ''.join(zise_all_path)
         size_sum = subprocess.check_output('du -csh ' + '/' + zise_all_path, shell=True)
@@ -131,22 +134,50 @@ for path in list_path:
 
         t.update({name: {'data': access_data_file, 'size': size_output.split()[-2], 'path_folder': path}})
 
+        list_data.append([name, str(access_data_file), size_output.split()[-2], path])
+        
         if access_data_file < input_date:
-            t_sort.update({name: {'data': str(access_data_file), 'size': size_output.split()[-2], 'path_folder': path}})
+            # list_small_if_data
+            z = z + 1
+            # print(1)
+            list_small_data.append([name, str(access_data_file), size_output.split()[-2], path])
+    list_small_data_test.append([path, z])
+
+# Последний элемент
+# print(list_data)
+# print(list_data[0][-1])
+
+print(list_small_data_test)
+print(len(list_small_data))
+
+# for i in len(list_data):
+#     if list_data[0][-1] == '/usr/sbin':
+#         print(list_data[i])
+
+# while  
+    # print(path, (access_data_file))
+    # t_sort.update({name: {'data': str(access_data_file), 'size': size_output.split()[-2], 'path_folder': path}})
+# print('path_folder' in t_sort)
+# print(list_data)
+# print(t.values('path_folder', path))
 
 
-total = 1000 # total number to reach
-bar_length = 50  # should be less than 100
-for i in range(total+1):
-    percent = 100.0*i/total
-    sys.stdout.write('\r')
-    sys.stdout.write("Process: [{:{}}] {:>3}"
-                    .format('#'*int(percent/(100.0/bar_length)), bar_length, ''))
-                    # .format('#'*int(percent/(100.0/bar_length)), bar_length, int(percent)))
-    sys.stdout.flush()
-    time.sleep(0.001)
-
+# print(t.values())
 # print(t_sort)
+
+
+# total = 1000 # total number to reach
+# bar_length = 50  # should be less than 100
+# for i in range(total+1):
+#     percent = 100.0*i/total
+#     sys.stdout.write('\r')
+#     sys.stdout.write("Process: [{:{}}] {:>3}"
+#                     .format('#'*int(percent/(100.0/bar_length)), bar_length, ''))
+#                     # .format('#'*int(percent/(100.0/bar_length)), bar_length, int(percent)))
+#     sys.stdout.flush()
+#     time.sleep(0.001)
+
+
 print("Сканирование успешно выполнено")
 
 print('Вывод статистики')
@@ -163,8 +194,6 @@ print("Для дополнительной информации о пакете 
 
 
 # print(t)
-
-
         # name i, size MB, datatime, data  
 
         # if access_data_file < input_date:
@@ -174,16 +203,13 @@ print("Для дополнительной информации о пакете 
         # du -sh .
 
 input('Нажмите любую клавишу для продолжения')       
-
         # found_matching_data = False
-
         # for z, access_data_file in enumerate(i):
         #     if access_data_file < input_date:
         #         size_result = int(size_result)
         #         full_size = full_size + size_result
         #         print(access_data_file, 'меньше', input_date, z, size_result/1024/1024, 'Mb')
         #         found_matching_data = True
-
         # if not found_matching_data:
         #     print('Не найдено')
             # округлить до 5 знаков после запятой
@@ -192,6 +218,7 @@ input('Нажмите любую клавишу для продолжения')
 # Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
 # существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
 # или файлы имеюющие наибеольшую частоту изменений
+
 
 ########################
 # Вывод списка старше определенной даты
@@ -202,13 +229,9 @@ input('Нажмите любую клавишу для продолжения')
 # Не забудь snap
 #########################
 
+
 # print(full_size/1024/1024, 'Mb')
 # print(r"¯\_(ツ)_/¯")
-
-t='#'
-for i in range(10):
-    t = t+'#'
-    print(t)
 
 # цикл
 # зависимости
