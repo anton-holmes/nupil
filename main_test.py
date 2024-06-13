@@ -1,8 +1,6 @@
 import os
-import sys
 import subprocess
 import re
-import time
 from datetime import date, datetime
 
 # import timeit
@@ -82,9 +80,21 @@ else:
     print("Продолжаем")
 print()
 
-input_date = date(2022, 6, 1)
+# input_date = date(2022, 6, 1)
 
-print('Для определяния неспользуемых бинарных файлов введите ДАТУ, старше которой произвести сканирование : ', input_date)
+print('Для определяния неспользуемых бинарных файлов введите ДАТУ, старше которой произвести сканирование')
+
+# Функция ввода даты
+year = int(input('Enter a year: '))
+month = int(input('Enter a month: '))
+day = int(input('Enter a day: '))
+# try exept
+input_date = date(year, month, day)
+
+print()
+print('Вы ввели дату', input_date)
+input('Нажмите любую клавишу для выполнения сканирования')
+print('Выполняется сканирование...')
 ####
 #
 ####
@@ -147,8 +157,9 @@ for path in list_path:
 # print(list_data)
 # print(list_data[0][-1])
 
-print(list_small_data_test)
-print(len(list_small_data))
+# print(list_small_data_test)
+for elem in list_small_data_test:
+    print(*elem)
 
 # for i in len(list_data):
 #     if list_data[0][-1] == '/usr/sbin':
@@ -161,96 +172,75 @@ print(len(list_small_data))
 # print(list_data)
 # print(t.values('path_folder', path))
 
+print("Сканирование успешно выполнено.")
+print("Общее количесвто неиспользованных бинирных файлов =", len(list_small_data))
 
-# print(t.values())
-# print(t_sort)
+print('++++++++++++++++++++++++++++++++++')
+print("Для просмотра результатов в соответсвующих каталогах, где онаружены пакеты введите его путь. ")
+k = input("Например /usr/sbin : ")
+print(k)
 
+# print(list_small_data)
 
-# total = 1000 # total number to reach
-# bar_length = 50  # should be less than 100
-# for i in range(total+1):
-#     percent = 100.0*i/total
-#     sys.stdout.write('\r')
-#     sys.stdout.write("Process: [{:{}}] {:>3}"
-#                     .format('#'*int(percent/(100.0/bar_length)), bar_length, ''))
-#                     # .format('#'*int(percent/(100.0/bar_length)), bar_length, int(percent)))
-#     sys.stdout.flush()
-#     time.sleep(0.001)
+for i in range(len(list_small_data)):
+    if list_small_data[i][-1] == k:
+        print(*list_small_data[i])
+print('++++++++++++++++++++++++++++++++++')
 
+print('Для получения информации по кнтретному пакету введите абсолютный путь до него')
 
-print("Сканирование успешно выполнено")
+path_absolute = input("Например /sbin/update-xmlcatalog : ")
+mini_path = path_absolute.split('/')
+name_packege = mini_path[-1]
+packege = subprocess.check_output('man -f ' + name_packege, shell=True)
+packege_output = packege.decode('utf-8').strip()
 
-print('Вывод статистики')
+ldd = subprocess.check_output('ldd ' + path_absolute , shell=True)
+ldd_output = packege.decode('utf-8').strip()
+print('++++++++++++++++++++++++++++++++++')
+print('Пакет предназначен')
+print(packege_output)
+print('++++++++++++++++++++++++++++++++++')
+print('Зависимости пакета')
+print(ldd_output)
+print('++++++++++++++++++++++++++++++++++')
+print('Для удаления програ ммы рекомендуетсяиспользовать менеджеры пакетов')
+print('apt, dpkg, snap и др.')
+# locate libreoffice
+# whereis libreoffice
 
-print("Для просмотра результатов соответсвующих каталогов введите его путь. Например '/usr/sbin' ")
-
-
-# поиск точного совпадения с существующим пакетом в apt
-# dpkg --get-selections | grep -v deinstall | grep -w dc
-
-
-print("Для дополнительной информации о пакете введите его название. Или Перейдите в меню выше ")
-
-
-
-# print(t)
-        # name i, size MB, datatime, data  
-
-        # if access_data_file < input_date:
-        #     size_result = int(size_result)
-        #     full_size = full_size + size_result
-        #     print(access_data_file, 'меньше', input_date, i, size_result/1024/1024, 'Mb')
-        # du -sh .
-
-input('Нажмите любую клавишу для продолжения')       
-        # found_matching_data = False
-        # for z, access_data_file in enumerate(i):
-        #     if access_data_file < input_date:
-        #         size_result = int(size_result)
-        #         full_size = full_size + size_result
-        #         print(access_data_file, 'меньше', input_date, z, size_result/1024/1024, 'Mb')
-        #         found_matching_data = True
-        # if not found_matching_data:
-        #     print('Не найдено')
-            # округлить до 5 знаков после запятой
-        
-
+#Находит все файлы по названию 
+# find
 # Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
 # существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
 # или файлы имеюющие наибеольшую частоту изменений
+# dpkg-query -L kontena-lens 
 
+# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
+# в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
+# какому менеджеру пакетов принадлежит программа
 
 ########################
 # Вывод списка старше определенной даты
-# Вывод списка зависимостей и зависимости зависимостей
 # Вывод man man -f ls
+# Вывод списка зависимостей и зависимости зависимостей
 # strace
 # Рекомендации по удалению
 # Не забудь snap
 #########################
 
+#print(ДЛЯ ПЕРЕХОДА В МЕНЮ НАЖМИТЕ й, ДЛЯ ВОЗВРАЩЕНИЯ В КАТАЛОГ ПОИСКА НАЖМИТЕ Ф, ДЛЯ ПОЛУЧЕНИЯ СПРАВКИ ПО ПАКЕТУ НАЖМИТЕ')
 
-# print(full_size/1024/1024, 'Mb')
-# print(r"¯\_(ツ)_/¯")
+input('Нажмите любую клавишу для завершения работы программы')
+print(r"¯\_(ツ)_/¯")
 
-# цикл
-# зависимости
-# краткая справка MAN
+print('####################################')
+print('###########    NUPIL   #############')
+print('####################################')
+
 # СПРАВКА ИЗ ИНТЕРНЕТА
 # рекомендации по удалению
-
-# for i in tqdm(range(10)):
-#     sleep(3)
-
-# stat file 
-# Проити по каждому файлу используя stat выдернув 
 # В каталоге содержится такой-то устаревший file 
-
-# какому менеджеру пакетов принадлежит программа
-# зависящие пакеты, зависимые пакеты
-# example data input
-
-# ldd /абсолютный путь к файлу
 
 # Выберите режим использования
 # today = datetime.date.today()
@@ -258,51 +248,7 @@ input('Нажмите любую клавишу для продолжения')
 # поиск всех файлов и их зависимостей, сколько занимают памяти
 # зависимости apt-cache depends имя_пакета
 
-# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
-# в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
-
 # дополнительная фича не позднее
 # используемые вчера 
 # используемые в течении недели
 # Показать самые большие пакеты
-# нужно усзнать куда что устанавливают пакеты на примере libreoffice
-# libreoffice --calc
-# если  это 
-# скольк о места занимает du -csh /lib/python3.13
-# список зависимосте ldd /usr/bin/python3 
-# strace /usr/bin/libreoffice отслеживание системных вызовов
-# /opt 
-
-# /user/share лежат данные /etc конфигурация
-# synaptik
-# менеджер пактов dpkg
-
-# Находит все файлы программы
-# whereis libreoffice
-# 
-
-#Находит все файлы по названию 
-# find
-#locate libreoffice
-
-# ищет где лежат файлы пакета
-# dpkg-query -L kontena-lens 
-
-# Выводит все файлы 
-
-# Функция ввода даты
-# year = int(input('Enter a year: '))
-# month = int(input('Enter a month: '))
-# day = int(input('Enter a day: '))
-# # try exept
-# input_date = date(year, month, day)
-
-'''
-Опция `relatime` (от "relative atime") используется в Linux-системах для управления обновлением времени доступа (atime) к файлам на файловой системе. Вот более подробное объяснение того, как работает `relatime`:
-
-1. **Оптимизация обновления времени доступа**: По умолчанию, в Unix-подобных системах, каждый раз, когда файл читается, время его последнего доступа (atime) обновляется. Это может привести к лишним операциям записи на диск, что замедляет работу системы, особенно на файловых системах с большим количеством операций ввода-вывода.
-
-2. **Условия обновления atime с `relatime`**: Когда опция `relatime` установлена, время доступа к файлу будет обновляться только в следующих случаях:
-   - Если предыдущее время доступа (atime) старше времени изменения (mtime) или времени создания (ctime) файла.
-   - Если предыдущее время доступа (atime) отстоит более чем на 24 часа назад от текущего времени.
-'''

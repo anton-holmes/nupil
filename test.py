@@ -1,10 +1,22 @@
-import time
-import sys
+import os
+import subprocess
 
-for i in range(30):
-    sys.stdout.write("#")
-    sys.stdout.flush()
-    time.sleep(0.002)
+path_absolute = input("Например /sbin/update-xmlcatalog : ")
+mini_path = path_absolute.split('/')
+mini_path = mini_path[-1]
+print(mini_path)
+packege = subprocess.check_output('man -f ' + mini_path, shell=True)
+packege_output = packege.decode('utf-8').strip()
+
+print(packege_output)
+
+# import time
+# import sys
+
+# for i in range(30):
+#     sys.stdout.write("#")
+#     sys.stdout.flush()
+#     time.sleep(0.002)
 
 # total = 1007  # total number to reach
 # bar_length = 30  # should be less than 100
