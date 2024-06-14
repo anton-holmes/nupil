@@ -3,14 +3,9 @@ import subprocess
 import re
 from datetime import date, datetime
 
-# import timeit
-# Засечь время работы программы
-# Использовать данные предыдущего анализа или собрать заново
-
 env_path = os.getenv("PATH")
 list_path = env_path.split(':')
-# list_path.append('/opt')
-# print(list_path)
+
 
 # Программа предназначена, выберите режим
 print('####################################')
@@ -95,12 +90,11 @@ print()
 print('Вы ввели дату', input_date)
 input('Нажмите любую клавишу для выполнения сканирования')
 print('Выполняется сканирование...')
-####
-#
-####
+
+
+
 
 list_output = ()
-# цикл
 full_size = 0
 t, t_sort =  {}, {}
 list_data, list_small_data = [], []
@@ -153,24 +147,11 @@ for path in list_path:
             list_small_data.append([name, str(access_data_file), size_output.split()[-2], path])
     list_small_data_test.append([path, z])
 
-# Последний элемент
-# print(list_data)
-# print(list_data[0][-1])
+# Результат
 
-# print(list_small_data_test)
 for elem in list_small_data_test:
     print(*elem)
 
-# for i in len(list_data):
-#     if list_data[0][-1] == '/usr/sbin':
-#         print(list_data[i])
-
-# while  
-    # print(path, (access_data_file))
-    # t_sort.update({name: {'data': str(access_data_file), 'size': size_output.split()[-2], 'path_folder': path}})
-# print('path_folder' in t_sort)
-# print(list_data)
-# print(t.values('path_folder', path))
 
 print("Сканирование успешно выполнено.")
 print("Общее количесвто неиспользованных бинирных файлов =", len(list_small_data))
@@ -187,7 +168,7 @@ for i in range(len(list_small_data)):
         print(*list_small_data[i])
 print('++++++++++++++++++++++++++++++++++')
 
-print('Для получения информации по кнтретному пакету введите абсолютный путь до него')
+print('Для получения информации по кнтретному пакету введите абсолютный путь')
 
 path_absolute = input("Например /sbin/update-xmlcatalog : ")
 mini_path = path_absolute.split('/')
@@ -196,7 +177,7 @@ packege = subprocess.check_output('man -f ' + name_packege, shell=True)
 packege_output = packege.decode('utf-8').strip()
 
 ldd = subprocess.check_output('ldd ' + path_absolute , shell=True)
-ldd_output = packege.decode('utf-8').strip()
+ldd_output = ldd.decode('utf-8').strip()
 print('++++++++++++++++++++++++++++++++++')
 print('Пакет предназначен')
 print(packege_output)
@@ -204,21 +185,23 @@ print('++++++++++++++++++++++++++++++++++')
 print('Зависимости пакета')
 print(ldd_output)
 print('++++++++++++++++++++++++++++++++++')
-print('Для удаления програ ммы рекомендуетсяиспользовать менеджеры пакетов')
-print('apt, dpkg, snap и др.')
-# locate libreoffice
-# whereis libreoffice
-
-#Находит все файлы по названию 
-# find
-# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
-# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
-# или файлы имеюющие наибеольшую частоту изменений
-# dpkg-query -L kontena-lens 
-
-# apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances mc | grep "^\w" | sort -u
+print('Для получения зависимостей пренадлежащих пакету можно использовать дополнительную комнаду')
+print('apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances htop | grep "^\w" | sort -u')
 # в результате выполнения этой команды будет выведен список уникальных зависимостей пакета Midnight Commander без рекомендаций, предложений, конфликтов, нарушений, замен и улучшений, отсортированный в алфавитном порядке.
-# какому менеджеру пакетов принадлежит программа
+print('++++++++++++++++++++++++++++++++++')
+print('Для удаления исполняемого файла рекомендуется использовать менеджеры пакетов')
+print('apt, dpkg, snap и др.')
+print('apt remove htop')
+print('dpkg -r htop - оставлет файлы конфигурации') 
+print('dpkg -purge htop - удаляет файлы конфигурации')
+print('snap remove htop')
+
+print('++++++++++++++++++++++++++++++++++')
+print('Для просфотра всех фалов пренадлежащих пакету')
+print('whereis htop')
+print('locate htop')
+print('Понадобятся права суперпользователя')
+print('find / -name htop')
 
 ########################
 # Вывод списка старше определенной даты
@@ -252,3 +235,11 @@ print('####################################')
 # используемые вчера 
 # используемые в течении недели
 # Показать самые большие пакеты
+
+#Находит все файлы по названию 
+
+# Результат вывода размера файла и зависимостей может быть несовсем точным т.к.
+# существуют каталолги где где храняться в ОС Linux где храняться временный файлы 
+# или файлы имеюющие наибеольшую частоту изменений
+# dpkg-query -L kontena-lens 
+# какому менеджеру пакетов принадлежит программа

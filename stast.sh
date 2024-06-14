@@ -26,5 +26,4 @@ BLOCK
       done
 }
 
-
 buildComposeYaml | docker-compose -f- "$@" up 

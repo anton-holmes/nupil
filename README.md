@@ -12,6 +12,9 @@ stat
 Без установки docker
 
 # Install
+
+python main.py
+
 gkh
 
 curl https://url -o output.file.name
